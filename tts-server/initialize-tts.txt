@@ -1,0 +1,13 @@
+CONSOLE_SECRET="4a8c587e9f7a01c01c8c2ead1a0feca5"
+
+echo $CONSOLE_SECRET
+
+docker-compose run --rm stack is-db init
+
+docker-compose run --rm stack is-db create-admin-user --id admin --email admin@hermit.com
+
+docker-compose run --rm stack is-db create-oauth-client --id cli --name "Command Line Interface" --owner admin --no-secret --redirect-uri "local-callback" --redirect-uri "code"
+
+docker-compose run --rm stack is-db create-oauth-client --id console --name "Console" --owner admin --secret "${CONSOLE_SECRET}" --redirect-uri "/console/oauth/callback" --logout-redirect-uri "/console"
+
+docker-compose up
